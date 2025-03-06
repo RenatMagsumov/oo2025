@@ -32,10 +32,10 @@ public class ResultController
 
     //annab konkreetne resilt(Id)/kui ei eksisteeri - veateade
     @GetMapping("/{id}")
-    public ResponseEntity<Result> getResultById(@PathVariable Long id) //<Result> sest see plokk tagastab result'i(kui koik on kooras)
+    public ResponseEntity<Result> getResultById(@PathVariable Long id) //<Result> sest see plokk tagastab result'i(kui koik on korras)
     {
-        return resultRepository.findById(id).map(ResponseEntity::ok).orElseThrow(() -> new RuntimeException("ID_NOT_FOUND"));
-        //.map(ResponseEntity::ok) kui Id on leitud, annab teada et koik on korras(id eksisteeriv)
+        Result result = resultRepository.findById(id).orElseThrow(() -> new RuntimeException("ID_NOT_FOUND"));
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping

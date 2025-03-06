@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -73,13 +74,25 @@ public class AthleteController
 
     @GetMapping("/AthletesWithScores")
     public ResponseEntity<List<String>> getAthletesWithScores()
-    //esimene plokk votab athletes listi ja score listi, streamis paneb neid kokku ning tuleb uus list, kus iga element on nuud athlete + tema results
     {
-        List<Athlete> athletes = athleteRepository.findAll(); //kusib koik athletes andmebaasist ning tulemust salvestatakse listis Athlete nagu athlete(athletina)
-        List<String> athleteScores = athletes.stream().map(athlete -> formatAthleteScore(athlete)).collect(Collectors.toList());
-        // Listist athletes teeme listi athleteScores(nimi + punktid)
-        // stream - võimaldab mugavalt töödelda listi elemente.
+         //kusib koik athletes andmebaasist ning tulemust salvestatakse listis Athlete nagu athlete(athletina)
+        List<Athlete> athletes = athleteRepository.findAll();
+        List<String> athleteScores = new ArrayList<>();
+        //teeme uus list athleteScores ning lisame siia Scores.  iga element on nuud athlete + tema results
+        for (Athlete athlete : athletes)
+        {
+            athleteScores.add(formatAthleteScore(athlete));
+        }
+                                    /*
+                         for (int i = 0; i < athletes.size(); i++)
+                         {
+                        athleteScores.add(formatAthleteScore(athletes.get(i)));
+                          }
+                                */
         return ResponseEntity.ok(athleteScores);
+        // Listist athletes teeme listi athleteScores(nimi + punktid)
+
+
     }
 
     //see plokk votab uuest listist(athlete+score) athleti koik score'd ja summerib neid ning tagastatakse juba athlete ja tema totalsum
