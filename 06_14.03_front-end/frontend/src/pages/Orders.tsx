@@ -19,6 +19,7 @@ function Orders()
           <div>Created: {order.created.toString()}</div>
           <div>Email: {order.person?.email}</div>
           <div>TotalSum: {order.totalSum} euro</div>
+          
           <div>{order.products.map(product => 
             <div key = {product.id}> 
               <div>{product.name}</div>
