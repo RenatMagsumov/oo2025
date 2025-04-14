@@ -1,62 +1,38 @@
-import { useEffect, useState } from 'react'
+
 import './App.css'
-import { Category } from './models/Category'
-import { Product } from './models/Product'
+
+import {  Route, Routes } from 'react-router-dom'
+import ManageProducts from './pages/ManageProducts'
+import MainPage from './pages/MainPage'
+import Arrayd from './pages/Arrayd'
+import Menu from './components/Menu'
+import ManageCategories from './pages/ManageCategories'
+import Login from './pages/Login'
+import Cart from './pages/Cart'
+import SignUp from './pages/SignUp'
+import Orders from './pages/Orders'
 
 function App() {
-  const sonad = ["Elas", "metsas", "karu"]
-  const autod = 
-  [
-    {"mark": "BMW", "mudel": "i5", "year": 2015},
-    {"mark": "Mercedes", "mudel": "S", "year": 2014},
-    {"mark": "Audi", "mudel": "TT", "year": 2016},
-    {"mark": "Volkswagen", "mudel": "Golf", "year": 2012}
-  ]
 
-   const [kategooriad, setKategooriad] = useState<Category[]>([])
-   const [products, setProducts] = useState<Product[]>([])
-//uef => onload
-useEffect(() => {
-  fetch("http://localhost:5074/categories")
-            .then(res=>res.json())
-            .then(json=>setKategooriad(json))
-}, []);
-
-useEffect(() => {
-  fetch("http://localhost:5074/products")
-            .then(res=>res.json())
-            .then(json=>setProducts(json))
-}, []);
-  
   return (
     <>
+    
+      <Menu />
       
-      {sonad.map(sona => 
-      <div key={sona}>
-        {sona}
-      </div> )}
-      <br />
-      <br />
-      {autod.map(auto => 
-      <div key={auto.mark+auto.mudel}>
-        {auto.mark} - {auto.mudel} ({auto.year})
-      </div> )}
-      <br />
-      <br />
-      {kategooriad.map(kategooria => 
-      <div key={kategooria.id}>
-        {kategooria.name} {kategooria.active}
-      </div> )}
-      <br />
-      <br />
-      {products.map(product => 
-      <div key={product.id}>
-        <div>{product.id}</div>
-        <div>{product.name}</div>
-        <div>{product.price}</div>
-        <div>{product.image}</div>
-        <div>{product.category.name}</div>
-      </div> )}
+      <Routes>
+        <Route path="/" element={ <MainPage />}   />
+        <Route path="/admin/products" element={ <ManageProducts />}   />
+        <Route path="/admin/categories" element={ <ManageCategories />}   />
+        
+        <Route path="/arrays" element={ <Arrayd />}   />
+        <Route path="/cart" element={ <Cart />}   />
+        <Route path="/login" element={ <Login />}   />
+        <Route path="/signup" element={ <SignUp />}   />
+        <Route path="/orders" element={ <Orders />}   />
+
+        <Route path="/*" element={ <div>Page not found</div> }   />
+      </Routes>
+
     </>
   )
 }
