@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Result } from "../models/Result";
 import { Athlete } from "../models/Athlete";
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 
 function ManageResults() {
-
   const [results, setResults] = useState<Result[]>([]);
   const [athletes, setAthletes] = useState<Athlete[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://localhost:5074/results")
@@ -27,11 +28,8 @@ function ManageResults() {
   }, []);
 
   const deleteResult = (id: number) => {
-    fetch(`http://localhost:5074/results/${id}`, {
-      method: "DELETE",
-    }).then(() =>
-      setResults(results.filter(result => result.id !== id))
-    );
+    fetch(`http://localhost:5074/results/${id}`, { method: "DELETE" })
+      .then(() => setResults(results.filter(result => result.id !== id)));
   };
 
   const eventRef = useRef<HTMLInputElement>(null);
@@ -53,14 +51,11 @@ function ManageResults() {
     fetch("http://localhost:5074/results", {
       method: "POST",
       body: JSON.stringify(newResult),
-      headers: {
-        "Content-Type": "application/json"
-      }
+      headers: { "Content-Type": "application/json" }
     })
       .then(res => res.json())
       .then(json => {
-        if (json.message === undefined && json.timestamp === undefined && json.status === undefined) {
-          // перезапрашиваем всё заново
+        if (json.message === undefined) {
           fetch("http://localhost:5074/results")
             .then(res => res.json())
             .then(data => {
@@ -77,8 +72,19 @@ function ManageResults() {
       });
   };
 
+  const sortAZ = () => {
+    setResults([...results].sort((a, b) => a.event.localeCompare(b.event)));
+  };
+
+  const sortZA = () => {
+    setResults([...results].sort((a, b) => b.event.localeCompare(a.event)));
+  };
+
   return (
     <div>
+      <button onClick={sortAZ}>Sort by: A-Z</button>
+      <button onClick={sortZA}>Sort by: Z-A</button>
+
       <h2>Manage Results</h2>
 
       <label>Event</label> <br />
@@ -111,6 +117,7 @@ function ManageResults() {
               <td>{result.athlete?.name}</td>
               <td>
                 <button onClick={() => deleteResult(result.id)}>Delete</button>
+                <button onClick={() => navigate(`/admin/result/${result.id}/edit`)}>Muuda</button>
               </td>
             </tr>
           )) : (

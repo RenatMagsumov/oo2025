@@ -1,24 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { Athlete } from "../models/Athlete";
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 
 function ManageAthletes() {
-
   const [athletes, setAthletes] = useState<Athlete[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5074" + "/athletes")
+    fetch("http://localhost:5074/athletes")
       .then(res => res.json())
       .then(json => setAthletes(json));
   }, []);
 
   const deleteAthlete = (id: number) => {
-    fetch(`${"http://localhost:5074"}/athletes/${id}`, {
-      method: "DELETE",
-    })
+    fetch(`http://localhost:5074/athletes/${id}`, { method: "DELETE" })
       .then(res => res.json())
       .then(json => {
-        if (json.message === undefined && json.timestamp === undefined && json.status === undefined) {
+        if (json.message === undefined) {
           setAthletes(json);
           toast.success("Athlete kustutatud!");
         } else {
@@ -43,16 +42,14 @@ function ManageAthletes() {
       age: Number(ageRef.current.value)
     };
 
-    fetch("http://localhost:5074" + "/athletes", {
+    fetch("http://localhost:5074/athletes", {
       method: "POST",
       body: JSON.stringify(newAthlete),
-      headers: {
-        "Content-Type": "application/json"
-      }
+      headers: { "Content-Type": "application/json" }
     })
       .then(res => res.json())
       .then(json => {
-        if (json.message === undefined && json.timestamp === undefined && json.status === undefined) {
+        if (json.message === undefined) {
           setAthletes(json);
           toast.success("Uus athlete lisatud!");
           if (nameRef.current) nameRef.current.value = "";
@@ -64,9 +61,21 @@ function ManageAthletes() {
       });
   };
 
+  const sortAZ = () => {
+    setAthletes([...athletes].sort((a, b) => a.name.localeCompare(b.name)));
+  };
+
+  const sortZA = () => {
+    setAthletes([...athletes].sort((a, b) => b.name.localeCompare(a.name)));
+  };
+
   return (
     <div>
       <h2>Manage Athletes</h2>
+
+      <button onClick={sortAZ}>Sort by: A-Z</button>
+      <button onClick={sortZA}>Sort by: Z-A</button>
+
       <label>Name</label> <br />
       <input ref={nameRef} type="text" /> <br />
       <label>Country</label> <br />
@@ -94,6 +103,7 @@ function ManageAthletes() {
               <td>{athlete.age}</td>
               <td>
                 <button onClick={() => deleteAthlete(athlete.id)}>Delete</button>
+                <button onClick={() => navigate(`/admin/athlete/${athlete.id}/edit`)}>Muuda</button>
               </td>
             </tr>
           ))}
