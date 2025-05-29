@@ -15,15 +15,16 @@ function ManageAthletes() {
 
   const deleteAthlete = (id: number) => {
     fetch(`http://localhost:5074/athletes/${id}`, { method: "DELETE" })
-      .then(res => res.json())
-      .then(json => {
-        if (json.message === undefined) {
-          setAthletes(json);
-          toast.success("Athlete kustutatud!");
-        } else {
-          toast.error(json.message);
-        }
-      });
+  .then(res => res.text()) 
+  .then(text => {
+    if (text === "ATHLETE_DELETED") {
+      setAthletes(prev => prev.filter(athlete => athlete.id !== id));
+      toast.success("Athlete kustutatud!");
+    } else {
+      toast.error(text);
+    }
+  });
+
   };
 
   const nameRef = useRef<HTMLInputElement>(null);
@@ -32,7 +33,7 @@ function ManageAthletes() {
 
   const addAthlete = () => {
     if (!nameRef.current?.value || !countryRef.current?.value || !ageRef.current?.value) {
-      toast.error("Kõik väljad peavad olema täidetud!");
+      toast.error("Kõik väljad peavad olema täidetud");
       return;
     }
 

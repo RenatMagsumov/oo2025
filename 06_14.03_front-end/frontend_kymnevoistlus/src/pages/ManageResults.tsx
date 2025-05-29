@@ -38,7 +38,7 @@ function ManageResults() {
 
   const addResult = () => {
     if (!eventRef.current?.value || !scoreRef.current?.value || !athleteRef.current?.value) {
-      toast.error("Kõik väljad peavad olema täidetud!");
+      toast.error("Kõik väljad peavad olema täidetud");
       return;
     }
 
@@ -61,9 +61,9 @@ function ManageResults() {
             .then(data => {
               if (Array.isArray(data)) {
                 setResults(data);
-                toast.success("Uus result lisatud!");
+                toast.success("Uus result lisatud");
               } else {
-                toast.error("Server ei tagastanud tulemuste massiivi.");
+                toast.error("Server ei tagastanud tulemuste massiivi");
               }
             });
         } else {
